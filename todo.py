@@ -6,7 +6,8 @@ Type
 1. to add task
 2. to view task
 3. to delete task 
-4. to exit
+4. to mark task as done
+5. to exit
 '''
 
 
@@ -30,7 +31,7 @@ def show_menu():
 # Add task
 def add_task(tasks):
     task = input("Enter task: ")
-    tasks.append(task)
+    tasks.append({"Title": task, "Done": False})
     save_tasks(tasks)
     print("Your task has been added")
     
@@ -39,7 +40,8 @@ def view_tasks(tasks):
     if tasks:
         print("\nYour tasks:")
         for i, task in enumerate(tasks):
-            print(f"{i + 1}. {task}")
+            status = "Done" if task["Done"] else "Not Done"
+            print(f"{i + 1}. {task['Title']} - {status}")
     else:
         print("You do not have any saved tasks yet.")
             
@@ -57,6 +59,20 @@ def delete_task(tasks):
     except ValueError:
         print("Enter a valid number")
         
+# Mark task as done
+def mark_done(tasks):
+    view_tasks(tasks)
+    try:
+        index = int(input("Number of the task you want to mark as done: "))
+        if 0 <= (index - 1) < len(tasks):
+            tasks[index - 1]["Done"] = True
+            save_tasks(tasks)
+            print(f"Task number {index} has been marked as done: {tasks[index - 1]}")
+        else:
+            print("invalid index number!")
+    except ValueError:
+        print("Enter a valid number")
+
 # Main program
 def main():
     tasks = load_tasks()
@@ -72,6 +88,8 @@ def main():
         elif choice == "3":
             delete_task(tasks)
         elif choice == "4":
+            mark_done(tasks)
+        elif choice == "5":
             print("Goodbye!")
             break
         else:
