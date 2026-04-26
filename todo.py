@@ -15,7 +15,21 @@ Type
 def load_tasks():
     try:
         with open("tasks.json", "r") as file:
-            return json.load(file)
+            tasks = json.load(file)
+            normalized = []
+
+            if isinstance(tasks, list):
+                for item in tasks:
+                    if isinstance(item, dict):
+                        normalized.append({
+                            "Title": item.get("Title", item.get("title", "")),
+                            "Done": bool(item.get("Done", item.get("done", False)))
+                        })
+                    elif isinstance(item, str):
+                        normalized.append({"Title": item, "Done": False})
+                return normalized
+
+            return []
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
